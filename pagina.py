@@ -6,7 +6,7 @@ st.title('\U0001f3b6 ONTOLIFY')
 st.subheader('', anchor=None)
 
 df = pd.read_csv('df_normalizado.csv',sep = ",", encoding='utf-8')
-st.markdown('Te presentamos esta página en la cual es un sistema de recomendación de canciones. Para poder darte una recomendación satisfactoria te solicitaremos que nos indiques cuántas veces has escuchado las siguientes canciones. En caso dado de que no la hayas escuchado digita 0.')
+st.markdown('Te presentamos esta página la cual es un sistema de recomendación de canciones. Para poder darte una recomendación satisfactoria te solicitaremos que nos indiques cuántas veces has escuchado las siguientes canciones. En caso dado de que no la hayas escuchado digita 0.')
 image = Image.open('musica.png')
 imag1 = Image.open('calidad.png')
 
@@ -35,7 +35,7 @@ with col2:
 st.markdown('## \u2705 Calificación de canciones')
 st.markdown('En el siguiente formulario califique las siguientes canciones de cada género. Después ')
 st.markdown('### Canciones de Rock')
-cancion1 = st.number_input('¿Cuántas veces ha escuchado Let it be?')
+cancion1 = st.number_input('¿Cuántas veces ha escuchado Let It Be?')
 cancion2 = st.number_input('¿Cuántas veces ha escuchado Sweet Home Alabama?')
 st.markdown('### Canciones de Pop')
 cancion3 = st.number_input('¿Cuántas veces ha escuchado Mas que nada?')
