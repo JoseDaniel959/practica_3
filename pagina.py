@@ -5,20 +5,23 @@ import numpy as np
 st.title('\U0001f3b6 ONTOLIFY')
 st.subheader('', anchor=None)
 
-df = pd.read_csv('df_normalizado.csv',sep = ",", encoding='utf-8')
 st.markdown('Te presentamos esta página la cual es un sistema de recomendación de canciones. Para poder darte una recomendación satisfactoria te solicitaremos que nos indiques cuántas veces has escuchado las siguientes canciones. En caso dado de que no la hayas escuchado digita 0.')
 image = Image.open('musica.png')
 imag1 = Image.open('calidad.png')
 
-def diff_euclidiana(l):
+df = pd.read_csv('df_calificaciones.csv',sep = ",", encoding='utf-8')
+def diff_euclidiana(normalizado):
     score = []
     for i in range(0,100):
-        fila_i = np.array(seleccion.iloc[i,:])
-        diff = np.linalg.norm(np.array(l)-fila_i)
+        fila_i = np.array(normalizado.iloc[i,:])
+        diff = np.linalg.norm(np.array(normalizado.iloc[-1])-fila_i)
         score.append(diff)
     return score
 
-seleccion = df[['Let It Be','Sweet Home Alabama','Mas que nada','Hallelujah','Thriller','Gimme! Gimme! Gimme! (A Man After Midnight)','Electric City','Side by Side','Take Five','Over the Rainbow','Part II','What Up Gangsta']]
+def minmax_norm(df_input):
+    return (df_input - df_input.min()) / ( df_input.max() - df_input.min())
+
+#seleccion = df[['Let It Be','Sweet Home Alabama','Mas que nada','Hallelujah','Thriller','Gimme! Gimme! Gimme! (A Man After Midnight)','Electric City','Side by Side','Take Five','Over the Rainbow','Part II','What Up Gangsta']]
 
 #st.dataframe(df[['Let It Be','Sweet Home Alabama','Mas que nada','Hallelujah','Thriller','Gimme! Gimme! Gimme! (A Man After Midnight)','Electric City','Side by Side','Take Five','Over the Rainbow','Part II','What Up Gangsta']])
 col1, col2 = st.columns(2)
@@ -53,14 +56,26 @@ st.markdown('### Canciones de Rap')
 cancion11 = st.number_input('¿Cuántas veces ha escuchado Part II?')
 cancion12 = st.number_input('¿Cuántas veces ha escuchado What Up Gangsta?')
 
+#st.dataframe(df)
 if st.button('Visualizar'):
+    df = pd.read_csv('df_calificaciones.csv',sep = ",", encoding='utf-8')
     calificacion_usuario = [cancion1,cancion2,cancion3,cancion4,cancion5,cancion6,cancion7,cancion8,cancion9,cancion10,cancion11,cancion12]
 
-    df['score'] = diff_euclidiana(calificacion_usuario)
- 
-    new_df = df.sort_values(by=['score'])
+    #Se realiza la normalización de los datos 
+    
+    df_normalizado = minmax_norm(df)
+    #Se selecciona las columnas que calififca el usuario
+    seleccion = df[['Let It Be','Sweet Home Alabama','Mas que nada','Hallelujah','Thriller','Gimme! Gimme! Gimme! (A Man After Midnight)','Electric City','Side by Side','Take Five','Over the Rainbow','Part II','What Up Gangsta']]
+    seleccion.loc[100] = calificacion_usuario
+    seleccion_normalizada = minmax_norm(seleccion) #Se normaliza el dataframe seleecionado
+    df_normalizado['score'] = diff_euclidiana(seleccion_normalizada) # Se asigna los scores al dataframe normalizado
+    new_df = df_normalizado.sort_values(by=['score']).reset_index(drop = True) #Se ordena el dataframe
+    
 
-    print(new_df.iloc[:,1:1878].head(2).idxmax(axis=1).reset_index(drop=True)[1])
+    
+    new_df = df_normalizado.sort_values(by=['score'])
+
+    #print(new_df.iloc[:,1:1878].head(2).idxmax(axis=1).reset_index(drop=True)[1])
   
     st.markdown('## \U0001f4bd Canciones que deberías escuchar')
     
